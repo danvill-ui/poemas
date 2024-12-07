@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,6 +11,11 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+      },
+      fontFamily: {
+        'serif':['Times new Roman'],
+        'sans':'Roboto',
+        'title':'Roboto'
       },
     },
   },
