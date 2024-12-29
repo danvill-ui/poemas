@@ -108,6 +108,6 @@ export default function pagePoem(){
                 {versos:[{contenido:'Tú eres sitio innombrable,'},{contenido:'Yo mi mano, la tecla.'},{contenido:'Mi idea es tu pupila que refleja'},{contenido:'las letras que por mi dedo nacen.'}]},
                 {versos:[{contenido:'¡Que preocupación más grande!'},{contenido:'No saber si mi canto pueda'},{contenido:'ser vida en tu frontal meseta'},{contenido:'o muerte en mi ego valle.'}]}]
         }*/
-        return null
-         //   return <><h1 className={'text-center font-title text-5xl mb-10'}><Palabra significado={poema.titulo}/></h1><ContentPoem poema={poema}/></>
+       // return null
+        return <><h1 className={'text-center font-title text-5xl mb-10'}><Palabra significado={poema.titulo}/></h1><ContentPoem poema={poema}/></>
 }
