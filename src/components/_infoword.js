@@ -64,21 +64,21 @@ useLayoutEffect(()=>{
             </Tabs>
         <CustomTabPanel value={value} index={0}>
 <List dense className={'p-0'}>
-    {acepciones.map((el)=>{
-        return <ListItem className={'min-w-full p-0'}>{el.raw}</ListItem>
+    {acepciones.map((el,index)=>{
+        return <ListItem key={index} className={'min-w-full p-0'}>{el.raw}</ListItem>
     })}
 </List>
 
         </CustomTabPanel>
 
         <CustomTabPanel value={value} index={1}>
-                {sinonimos.map((el)=>{
-                    return <Button className={'m-1'} onClick={()=>props.addWord(el.replace('1',''))}>{el.replace('1','')}</Button>
+                {sinonimos.map((el,index)=>{
+                    return <Button key={index} className={'m-1'} onClick={()=>props.addWord(el.replace('1',''))}>{el.replace('1','')}</Button>
                 })}
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-                {antonimos.map((el)=>{
-                    return <Button className={'m-1'} onClick={()=>props.addWord(el)}>{el}</Button>
+                {antonimos.map((el,index)=>{
+                    return <Button key={index} className={'m-1'} onClick={()=>props.addWord(el)}>{el}</Button>
                 })}
             </CustomTabPanel>
     </div>

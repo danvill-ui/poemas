@@ -17,7 +17,7 @@ export default function Preposicion(props){
         <span className={'me-1'} onClick={e=>setOpen(true)}>{preposicion}</span>
         {open? <div className={'min-w-96 bg-white absolute top-100 left-100 z-10' }>
             {preposiciones.map((el)=>{
-               return <Button onClick={e=>handleClickPreposicion(el)}>{el}</Button>
+               return <Button key={el} onClick={e=>handleClickPreposicion(el)}>{el}</Button>
             })}
         </div>:null}
     </div></ClickAwayListener>
