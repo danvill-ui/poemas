@@ -1,9 +1,9 @@
 'use client'
 import {useState} from "react";
 import {Tooltip} from "@mui/material";
-export default function contentPoet() {
-    const [poem,setPoem] = useState('Poesia y otras cosas'),
-        handleClick=(e)=>{
+export default function ContentPoet() {
+
+      const  handleClick=(e)=>{
             const selection=document.getSelection()
             const range=new Range()
             console.log(selection.toString())

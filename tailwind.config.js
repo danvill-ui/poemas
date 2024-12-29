@@ -15,7 +15,7 @@ module.exports = {
       fontFamily: {
         'serif':['Times new Roman'],
         'sans':'Roboto',
-        'title':'Roboto'
+        'title':['var(--font-title)']
       },
     },
   },
