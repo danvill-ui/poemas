@@ -2,7 +2,7 @@ import ContentPoem from "@/app/[autor]/[poema]/_ContentPoem";
 import Palabra from "@/components/_Palabra";
 export default function pagePoem(){
     const poema=
-        {titulo:'Exorcismo',
+       /* {titulo:'Exorcismo',
                 estrofas:[
                         {versos:[
                             { contenido:'Aun no salió el sol' },
@@ -38,8 +38,7 @@ export default function pagePoem(){
                                         { contenido:'la fuerza para sacarte' }
                                 ]}
                 ]
-        }
-        /*
+        }*/
         {titulo:'Obsesión',
             estrofas:[
                 {versos:[
@@ -76,7 +75,7 @@ export default function pagePoem(){
             ]
         }
 
-    {titulo:'Luchar, amar, vivir',
+    /*{titulo:'Luchar, amar, vivir',
         estrofas:[
             {versos:[
                     {contenido:'Desde Cabo Espartel no se ve Tánger'},
