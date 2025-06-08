@@ -27,7 +27,7 @@ export default function Palabra(props) {
         getDataRAE()
     },[palabra])
 
-        if(!dataRAE.ok){
+        if(!dataRAE || !dataRAE.ok){
             return <span className={'me-1 bg-amber-200 text-black relative'}>{palabra}</span>
         }
         const meaning=dataRAE ? dataRAE.data.meanings[0] : null,
