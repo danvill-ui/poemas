@@ -36,7 +36,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className={`${title.variable} font-sans`}>
-    <body className={'flex flex-col h-full bg-black text-white p-0' } style={{minHeight: '100vh'}}>
+    <body className={'flex flex-col h-full  p-0' } style={{minHeight: '100vh'}}>
     <header className={'flex p-6'}>
       <h1 className={'flex-grow-0 text-black font-serif text-3xl font-bold uppercase'}><i>Poemas al alimón</i>
       </h1>
