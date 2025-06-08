@@ -31,19 +31,21 @@ export default function Palabra(props) {
             return <span className={'me-1 bg-amber-200 text-black relative'}>{palabra}</span>
         }
         const meaning=dataRAE ? dataRAE.data.meanings[0] : null,
-            origin=meaning?meaning.origin:null,
-            isPreposicion=meaning.senses.find(el=>el.category==='preposition')
+            origin=meaning?meaning.origin:null
+           // isPreposicion=meaning.senses.find(el=>el.category==='preposition')
+           if(meaning.senses){
             for(let el of meaning.senses){
                  el.antonyms ? antonimos.push(el.antonyms):null
                  el.synonyms ? sinonimos.push(el.synonyms):null
             }
+           } 
        let className='me-1 relative'
     if(open){
         className+=' bg-white text-black'
     }
-    if(isPreposicion){
+  /*  if(isPreposicion){
         return <Preposicion palabra={palabra}/>
-    }
+    }*/
     if(oldWords.length>1 && oldWords[0]!==palabra){
         className='border-2 p-3'
        // oldWords.length=1
