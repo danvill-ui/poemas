@@ -67,7 +67,7 @@ export default function NavActions() {
              <img src={'/img/icons/lira.svg'} style={{width:50}}/>
           </Button>
           
-          <Button onClick={() => handleClick("list")} className={`min-w-0 p-2 min-h-[70px] border-2 transition-all duration-300 ${
+          <Button onClick={() => handleClick("list")} className={`hidden md:block min-w-0 p-2 min-h-[70px] border-2 transition-all duration-300 ${
               activeBtn === "list" 
                 ? "!border-onyx !text-onyx !bg-white" 
                 : "!border-transparent !text-gold !bg-marble"
