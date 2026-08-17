@@ -1,0 +1,36 @@
+
+      <article className={'text-center flex flex-col'}>
+        <i className='w-full lg:w-1/3 mx-auto mb-1 block font-serif text-2xl text-gold'>
+         <Tooltip arrow title={'Te invoco, espíritu que moras en el Hades, te invoco por el nombre de aquel que bajó a las sombras y regresó con la verdad en sus labios, el tracio Orfeo, maestro de las cuerdas que detuvo el llanto de los muertos...'}>
+         Ἐπικαλοῦμαί σε τὸν ἐν τῷ Ἅιδῃ, ἐπικαλοῦμαί σε κατὰ τοῦ καταβάντος εἰς τὰς σκιὰς καὶ ἐπανελθόντος μετὰ ἀληθείας...</Tooltip> <br/> </i>
+          <b>PGM IV. 3086-3124</b>
+      </article>
+      <article className={'text-center flex flex-col bg-white text-gold mx-auto align-stretch'}>
+        <i className='w-full lg:w-1/3 mx-auto mb-1 block font-serif text-2xl '>
+         <Tooltip arrow title={'Y él, pulsando su cítara con notas claras... / ...y se apaciguaron / las olas y el viento'}>αὐτὰρ ὁ φορμίζων λιγέα νόμον... / ...ἐν δ' ἐτέθησαν / κύματα καὶ νηνεμίη</Tooltip> <br/> </i>
+          <b>Apolonio de Rodas, Argonáuticas 1.540-542</b>
+      </article>
+      <article className={'text-center flex flex-col'}>
+        <i className='w-full lg:w-1/3 mx-auto mb-1 block font-serif text-2xl text-gold'>
+         <Tooltip arrow title={'Y ya, volviendo atrás sus pasos, había evadido todo riesgo,y Eurídice, devuelta, venía ya hacia la luz de arriba'}>Iamque pedem referens casus evaserat omnis,
+redditaque Eurydice superas veniebat ad auras</Tooltip> <br/> </i>
+          <b>Geórgicas de Virgilio (Libro IV, versos 485-486),</b>
+      </article>
+       <article className={'text-center flex flex-col'}>
+        <i className='w-full lg:w-1/3 mx-auto mb-1 block font-serif text-2xl text-gold'>
+         <Tooltip arrow title={'Ella ya se había disuelto.'}>Sie war schon aufgelöst.</Tooltip> <br/> </i>
+          <b>Orpheus. Eurydike. Hermes, Rilke</b>
+      </article>
+      <article className={'text-center flex flex-col'}>
+        <i className='w-full lg:w-1/3 mx-auto mb-1 block font-serif text-2xl text-gold'>
+         <Tooltip arrow title={'Ella ya se había disuelto.'}>"Que es ley, Naturaleza humana,
+que quien la vida desea,
+de la muerte no se vuelva
+a mirar a la belleza."</Tooltip> <br/> </i>
+          <b>El divino orfeo. Calderón</b>
+      </article>
+      <article className={'text-center flex flex-col'}>
+        <i className='w-full lg:w-1/3 mx-auto mb-1 block font-serif text-2xl text-gold'>
+         <Tooltip arrow title={'Todo lo recibes. Todo lo entregas'}>πάντα τε γὰρ δέχει, πάντων δ᾽ ἀποδέξει</Tooltip> <br/> </i>
+          <b>Himnos Orficos. Himno XVIII (A Plutón)</b>
+      </article>

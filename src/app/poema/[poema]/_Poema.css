@@ -1,0 +1,35 @@
+.poema{
+    min-height:80vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content: center;
+}
+
+
+.estrofa{
+    font-size:1.2rem
+}
+
+.tituloPoema{
+    font-size:1.5rem;
+    font-weight:bold;
+    letter-spacing:.3rem;
+     font-family:'Righteous';
+}
+
+.poeta{
+    font-weight:bold
+}
+
+.estrofa  >div:first-child >span:first-child::first-letter {
+    display: inline-block;
+    color:var(--color-gold);
+    position:relative;
+    text-transform:uppercase;
+    font-size: 150%;
+    line-height: 100%;
+    font-family:"serif";
+    float: left;
+    margin-right: 0.1rem;
+}

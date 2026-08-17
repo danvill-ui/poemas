@@ -1,0 +1,33 @@
+@font-face {
+    font-family: "orfeo";
+    src: url("orfeo.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+.icon {
+    /* Use !important to prevent extensions from overriding this font. */
+    font-family: "orfeo" !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-katarsis:before {
+  content: "\e900"; /* El código hex de IcoMoon */
+}
+.icon-transgresion:before {
+  content: "\e901";
+}
+.icon-nostalgia:before {
+  content: "\e902";
+}
+.icon-eco:before {
+  content: "\e903"; /* Tu icono de Eco */
+}

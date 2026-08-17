@@ -1,0 +1,119 @@
+@import "@phosphor-icons/web/regular";
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dorsa&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Niconne&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Importación de fuentes */
+
+
+:root {
+  --color-marble: #F2EFE9;
+  --color-gold: #B89D66;
+  --height-header : 70px;
+  --orfeo-transgresion: #C41E3A;
+  --orfeo-eco: #40E0D0;
+  --orfeo-katarsis: #FFD700;
+}
+
+@layer base {
+  html {
+    font-size: 16px;
+    /* Aplicamos el color de fondo base desde la paleta configurada en Tailwind */
+    @apply bg-white;
+  }
+
+  @media (max-width: 640px) {
+    html {
+      font-size: 18px;
+    }
+  }
+
+  body {
+    margin: 0;
+    /* Usamos la fuente serif principal por defecto */
+    @apply font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif ;
+  }
+}
+
+/* Clases de utilidad personalizadas */
+.verso {
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* Grid responsive basado en tu configuración */
+.grid-container {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 640px) {
+  .grid-container {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-container {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+/* Helpers para spans (ya accesibles vía Tailwind, pero mantenidos aquí por compatibilidad) */
+.grid-col-1 { grid-column: span 1; }
+.grid-col-2 { grid-column: span 2; }
+.grid-col-3 { grid-column: span 3; }
+.grid-col-4 { grid-column: span 4; }
+.grid-col-6 { grid-column: span 6; }
+.grid-col-12 { grid-column: span 12; }
+
+@font-face {
+  font-family: 'icomoon';
+  /* Fíjate que añadimos la barra '/' al principio de cada ruta */
+  src: url('/fonts/icomoon.eot?fw3zgi');
+  src: url('/fonts/icomoon.eot?fw3zgi#iefix') format('embedded-opentype'),
+       url('/fonts/icomoon.ttf?fw3zgi') format('truetype'),
+       url('/fonts/icomoon.woff?fw3zgi') format('woff'),
+       url('/fonts/icomoon.svg?fw3zgi#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+/* El resto de las clases que copiaste del archivo style.css se quedan igual */
+[class^="icon-"], [class*=" icon-"] {
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-transgresion:before {
+  content: "\e900";
+}
+.icon-eco:before {
+  content: "\e901";
+}
+.icon-katarsis:before {
+  content: "\e902";
+}
+.icon-nostalgia:before {
+  content: "\e903";
+}
+
