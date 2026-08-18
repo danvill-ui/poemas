@@ -35,8 +35,8 @@ export default function LayoutClient({ children }) {
     <SessionProvider>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <header className="shadow-lg bg-marble fixed top-0 w-full z-[200] text-primary" style={{height:'var(--height-header)'}} >
-            <div className="container flex items-center">
+          <header className="shadow-lg bg-marble fixed top-0 w-full z-[200] text-primary flex h-[var(--height-header)]">
+            <div className="w-full md:container md:mx-auto flex items-center ps-3">
               <Link href={'/'}>
                 <h1 className="flex-grow-0 font-serif uppercase text-xl text-onyx text-center fw-bold tracking-wider">
                   <img src={'/img/logo.svg'} style={{height:50}} alt="Logo" />

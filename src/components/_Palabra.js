@@ -75,7 +75,7 @@ export default function Palabra(props) {
     }
   }
 
-  console.log('dataRAE=',props.rae)
+
   let className =`me-1 relative tracking-wider`;
   if (open) className += " bg-white text-black";
   if (oldWords.length > 1 && oldWords[0] !== palabra) className = "border-2 p-3";
@@ -110,7 +110,7 @@ export default function Palabra(props) {
           {props.significado}
           </span>
         ) : (
-          <div onClick={() => findWord(palabra)} className={className} ref={ref}>
+          <div>
             {props.significado}
           </div>
         )}

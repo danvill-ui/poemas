@@ -1,3 +1,5 @@
+'use client';
+
 import { TextField, InputAdornment, Box, Avatar, Typography, CircularProgress, Chip, Skeleton } from "@mui/material";
 import useTermIcon from "@/components/setIcon";
 import { useEffect, useRef } from "react";
@@ -23,7 +25,6 @@ export default function CustomSearchDropdown() {
     return () => clearTimeout(timer);
   }, []);
 
-  // 💡 Sincronización robusta: Cada vez que cambie query, page o selectedTema, disparamos la búsqueda con los 3 valores exactos de Redux.
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       dispatch(fetchPoemas({ page, query, tema: selectedTema }));
@@ -32,18 +33,16 @@ export default function CustomSearchDropdown() {
     return () => clearTimeout(delayDebounce);
   }, [query, page, selectedTema, dispatch]);
 
-  // Manejar clic en categoría / tema de forma limpia
   const handleChipClick = (e, el) => {
     e.stopPropagation();
     e.preventDefault();
     
     const nuevoTema = selectedTema === el ? null : el;
     dispatch(setSelectedTema(nuevoTema));
-    dispatch(setPage(1)); // Forzamos la página a 1 en el store
+    dispatch(setPage(1));
     dispatch(setOpen(true));
   };
 
-  // Scroll infinito
   const handleScroll = (e) => {
     const node = e.currentTarget;
     if (
@@ -60,7 +59,6 @@ export default function CustomSearchDropdown() {
     return (b[sortBy] || 0) - (a[sortBy] || 0);
   });
 
-  // Cerrar dropdown al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -74,7 +72,6 @@ export default function CustomSearchDropdown() {
   return (
     <div className="container w-full relative" ref={containerRef}>
       
-      {/* 💡 Etiqueta seleccionada arriba del buscador con opción de deseleccionar */}
       {selectedTema && (
         <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
           <Typography variant="caption" className="text-gray-500 font-medium">
@@ -119,7 +116,7 @@ export default function CustomSearchDropdown() {
         <Box sx={{ position: 'absolute', left: 0, right: 0, zIndex: 1300, borderRadius: '12px', overflow: 'hidden', boxShadow: 3, backgroundColor: '#ffffff', mt: 0.5 }}>
           <Box sx={{ px: 2, py: 1.5, backgroundColor: '#f8f9fa', borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 2 }}>
             <Typography variant="caption" className="font-semibold text-gray-600 uppercase tracking-wider flex items-center gap-2">
-              Resultados encontrados {selectedTema && `(Tema: ${selectedTema})`}
+              Resultados {selectedTema && `(Tema: ${selectedTema})`}
               {loading && <CircularProgress size={12} sx={{ color: '#D4AF37' }} />}
             </Typography>
             <Typography variant="caption" className="font-bold text-gold bg-gold/10 px-2.5 py-1 rounded-full">
@@ -146,26 +143,10 @@ export default function CustomSearchDropdown() {
                   >
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexGrow: 1, minWidth: 0 }}>
                       <Skeleton variant="circular" width={40} height={40} sx={{ flexShrink: 0 }} />
-                      <Box sx={{ minWidth: 0, width: '60%' }}>
+                      <Box sx={{ minWidth: 0, width: '100%' }}>
                         <Skeleton variant="text" width="80%" height={24} />
                         <Skeleton variant="text" width="40%" height={16} />
                       </Box>
-                    </Box>
-
-                    <Box className="flex ms-auto me-2">
-                      <div className="flex gap-2 items-center">
-                        <Skeleton variant="rounded" width={85} height={28} sx={{ borderRadius: '16px' }} />
-                        <Skeleton variant="rounded" width={65} height={28} sx={{ borderRadius: '16px' }} />
-                      </div>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', gap: 1, textAlign: 'center', flexShrink: 0 }} className="mx-auto rounded-lg p-2 bg-gray-50">
-                      {[1, 2, 3].map((boxItem) => (
-                        <Box key={boxItem} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', px: 1 }}>
-                          <Skeleton variant="circular" width={24} height={24} sx={{ mb: 0.5 }} />
-                          <Skeleton variant="text" width={24} height={14} />
-                        </Box>
-                      ))}
                     </Box>
                   </Box>
                 ))}
@@ -186,6 +167,7 @@ export default function CustomSearchDropdown() {
                   }}
                   sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, padding: '12px 16px', borderBottom: '1px solid #e0e0e0', cursor: 'pointer', '&:hover': { backgroundColor: '#f3f4f6' } }}
                 >
+                  {/* Bloque principal (Avatar, título y autor): Ocupa todo en móvil, flexible en desktop */}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexGrow: 1, minWidth: 0 }}>
                     <Avatar src={option.autor_imagen} alt={option.autor_nombre} sx={{ width: 40, height: 40, flexShrink: 0 }} />
                     <Box sx={{ minWidth: 0 }}>
@@ -194,7 +176,8 @@ export default function CustomSearchDropdown() {
                     </Box>
                   </Box>
 
-                  <Box className="flex ms-auto me-2 content-center">
+                  {/* Temas clave: Oculto en móvil (hidden), visible a partir de pantallas medianas (md:flex) */}
+                  <Box className="hidden md:flex ms-auto me-2 content-center">
                     {option?.temas_clave?.length ? (
                       <div className="flex flex-wrap justify-center items-center py-3 gap-2 my-auto">
                         <Chip 
@@ -222,11 +205,11 @@ export default function CustomSearchDropdown() {
                     ) : null}
                   </Box>
 
+                  {/* Color emocional: Oculto en móvil, visible en escritorio */}
                   <Box 
-                    sx={{ display: 'flex', gap: 1, textAlign: 'center', flexShrink: 0, backgroundColor: obtenerColorEmocionalOrfeo(option.eco, option.transgresion, option.katarsis) }} 
+                    sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, textAlign: 'center', flexShrink: 0, backgroundColor: obtenerColorEmocionalOrfeo(option.eco, option.transgresion, option.katarsis) }} 
                     className="mx-auto rounded-lg shadow-lg p-4 bg-opacity-60"
                   >
-                     
                   </Box>
                 </Box>
               ))

@@ -19,6 +19,13 @@
   --orfeo-transgresion: #C41E3A;
   --orfeo-eco: #40E0D0;
   --orfeo-katarsis: #FFD700;
+  --height-header: 60px; /* Altura por defecto para móviles */
+}
+
+@media (min-width: 768px) {
+  :root {
+    --height-header: 80px; /* Altura para pantallas medianas/escritorio (md) */
+  }
 }
 
 @layer base {
