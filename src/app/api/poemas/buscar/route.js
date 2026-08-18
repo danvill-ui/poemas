@@ -10,7 +10,7 @@ export async function GET(request) {
     const offset = searchParams.get('offset') || '0';
 
     // 2. Obtener la URL base del backend (en servidor usamos la variable de entorno directamente)
-    const orfeoApiUrl = process.env.NEXT_PUBLIC_ORFEO_API_URL || 'http://localhost:4000';
+    const orfeoApiUrl = process.env.ORFEOAPI || 'https://localhost:4000';
 
     // 3. Construir la URL hacia tu Express (en singular: /poema/search)
     let url = `${orfeoApiUrl}/poema/search?limit=${limit}&offset=${offset}`;

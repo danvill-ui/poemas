@@ -24,8 +24,8 @@ export default function AutoresPorLetra() {
       try {
         // Determinamos el query string a enviar a la API
         const queryVal = letraSeleccionada || busquedaTexto;
-           const host=  await fetch('/api/getURL')
-      const { orfeoApiUrl } = await host.json();
+        const host = await fetch('/api/getURL');
+        const { orfeoApiUrl } = await host.json();
         const res = await fetch(`${orfeoApiUrl}/poeta/search?q=${encodeURIComponent(queryVal)}`);
         const data = await res.json();
         
@@ -63,7 +63,6 @@ export default function AutoresPorLetra() {
     setBusquedaTexto(e.target.value);
   };
 
-  console.log('autores',autores)
   return (
     <div className="container mx-auto px-4 my-8">
       <h2 className="text-2xl font-bold text-center mb-6 font-serif">Índice de Autores</h2>
@@ -110,25 +109,34 @@ export default function AutoresPorLetra() {
         )}
 
         {!loading && autores.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" style={{maxHeight:'50vh', overflow:'auto'}}>
+          <div 
+            className="flex sm:grid overflow-x-auto sm:overflow-x-visible snap-x snap-mandatory sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-4 sm:pb-0 scrollbar-thin scrollbar-thumb-gold/30 items-stretch"
+            style={{ maxHeight: 'none' }}
+          >
             {autores.map((autor) => (
               <Link 
                 key={autor.id} 
                 href={`/poetas/${autor.id}`}
-                className="border border-gold/30 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-gold/5 flex items-center gap-4"
+                className="border border-gold/30 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-gold/5 flex flex-col items-center text-center gap-3 flex-shrink-0 sm:flex-shrink w-[40vw] sm:w-auto snap-start relative"
               >
-                <span className={'p-2 rounded-full'} style={{backgroundColor:obtenerColorEmocionalPersonalizado(autor.media_eco,autor.media_transgresion,autor.media_katarsis)}}/>
+                {/* Indicador de color emocional (absoluto en la esquina superior izquierda o integrado) */}
+                <span 
+                  className="absolute top-3 left-3 w-3 h-3 rounded-full" 
+                  style={{ backgroundColor: obtenerColorEmocionalPersonalizado(autor.media_eco, autor.media_transgresion, autor.media_katarsis) }}
+                />
+
                 {autor.imagen_url && (
                   <img 
                     src={autor.imagen_url} 
                     alt={autor.nombre} 
-                    className="w-12 h-12 rounded-full object-cover border border-gold" 
+                    className="w-16 h-16 rounded-full object-cover border border-gold mt-2" 
                   />
                 )}
-                <div>
-                  <h3 className="font-bold text-onyx font-serif">{autor.nombre}</h3>
+                
+                <div className="w-full">
+                  <h3 className="font-bold text-onyx font-serif text-sm sm:text-base line-clamp-2">{autor.nombre}</h3>
                   {autor.nombre_pais && (
-                    <span className="text-xs text-gray-600">{autor.nombre_pais}</span>
+                    <span className="text-xs text-gray-600 block mt-1">{autor.nombre_pais}</span>
                   )}
                 </div>
               </Link>

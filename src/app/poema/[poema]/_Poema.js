@@ -36,6 +36,7 @@ export default function Poema({ poema, relacionados }) {
   const color = obtenerColorEmocionalOrfeo(poemaData.poema.eco, poemaData.poema.transgresion, poemaData.poema.katarsis);
   const ideas = ['transgresion', 'katarsis', 'eco'];
 
+  console.log('relacionados',relacionados)
   return (
     <>
       <section className="text-center my-9 md:text-center font-sans text-onyx text-2xl p-3" >
@@ -51,7 +52,7 @@ export default function Poema({ poema, relacionados }) {
       <section>
         <h2 className="container mt-5 text-bold"><b>Orfeo relaciona:</b></h2><br/>
         <ol className='grid-container container mb-5'>
-          {relacionados?.map((el, index) => (
+          {relacionados? relacionados?.map((el, index) => (
             <li key={index} className={'grid-col-3 border border-bold flex p-3 shadow-lg rounded-lg bg-gold/10 '}>
               <div className={'mx-auto'}> 
                 <Link href={`/poema/${el.poema_id}`} className={'text-serif uppercase text-gold text-center flex flex-col'}>
@@ -62,7 +63,7 @@ export default function Poema({ poema, relacionados }) {
                 </Link>
               </div>
             </li>
-          ))}
+          )):null}
         </ol>
       </section>
     </>

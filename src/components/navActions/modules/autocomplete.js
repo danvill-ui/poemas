@@ -25,7 +25,7 @@ export default function CustomSearchDropdown() {
     return () => clearTimeout(timer);
   }, []);
 
-  // 💡 Búsqueda reactiva por cambios, pero SIN abrir el panel automáticamente aquí
+  // 💡 Búsqueda reactiva por cambios en los filtros, pero SIN manipular el estado 'open' aquí
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       dispatch(fetchPoemas({ page, query, tema: selectedTema }));
@@ -41,7 +41,7 @@ export default function CustomSearchDropdown() {
     const nuevoTema = selectedTema === el ? null : el;
     dispatch(setSelectedTema(nuevoTema));
     dispatch(setPage(1));
-    dispatch(setOpen(true)); // Acción explícita del usuario
+    dispatch(setOpen(true)); // Acción explícita del usuario al filtrar por tema
   };
 
   const handleScroll = (e) => {
@@ -52,6 +52,7 @@ export default function CustomSearchDropdown() {
       hasMore
     ) {
       dispatch(setPage(page + 1));
+      // Nota: Eliminado dispatch(setOpen(true)) aquí para evitar que se abra al hacer scroll abajo
     }
   };
 
@@ -60,6 +61,7 @@ export default function CustomSearchDropdown() {
     return (b[sortBy] || 0) - (a[sortBy] || 0);
   });
 
+  // Cerrar al hacer clic fuera del componente
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -97,10 +99,12 @@ export default function CustomSearchDropdown() {
           const val = e.target.value;
           dispatch(setQuery(val));
           dispatch(setPage(1));
-          dispatch(setOpen(true)); // 💡 Se abre porque el usuario está escribiendo activamente
+          dispatch(setOpen(true)); // Se abre solo porque el usuario está escribiendo
         }}
         onFocus={() => {
-          dispatch(setOpen(true)); // 💡 Se abre porque el usuario hace foco en el input
+          // Opcional: si quieres que se abra al hacer foco solo si hay texto o resultados previos, puedes condicionarlo. 
+          // De momento lo dejamos abierto al enfocar si el usuario interactúa.
+          dispatch(setOpen(true));
         }}
         fullWidth
         InputProps={{
