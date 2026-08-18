@@ -5,7 +5,7 @@ export async function POST(request, { params }) {
 
   try {
     const body = await request.json();
-    const orfeoApiUrl = process.env.NEXT_PUBLIC_ORFEO_API_URL || 'http://localhost:4000';
+    const orfeoApiUrl = process.env.ORFEOAPI || 'http://localhost:4000';
 
     // Llama al servidor de Express usando la ruta en singular (/poema/:id/metricas)
     const response = await fetch(`${orfeoApiUrl}/poema/${id}/metricas`, {
