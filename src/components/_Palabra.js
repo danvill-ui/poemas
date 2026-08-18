@@ -111,7 +111,10 @@ export default function Palabra(props) {
           </span>
         ) : (
           <div>
-            {props.significado}
+              <span 
+            className="me-1 relative tracking-wider font-medium"
+          >{props.significado}</span>
+
           </div>
         )}
 

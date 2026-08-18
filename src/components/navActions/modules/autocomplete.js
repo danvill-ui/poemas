@@ -25,6 +25,7 @@ export default function CustomSearchDropdown() {
     return () => clearTimeout(timer);
   }, []);
 
+  // 💡 Búsqueda reactiva por cambios, pero SIN abrir el panel automáticamente aquí
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       dispatch(fetchPoemas({ page, query, tema: selectedTema }));
@@ -40,7 +41,7 @@ export default function CustomSearchDropdown() {
     const nuevoTema = selectedTema === el ? null : el;
     dispatch(setSelectedTema(nuevoTema));
     dispatch(setPage(1));
-    dispatch(setOpen(true));
+    dispatch(setOpen(true)); // Acción explícita del usuario
   };
 
   const handleScroll = (e) => {
@@ -96,10 +97,10 @@ export default function CustomSearchDropdown() {
           const val = e.target.value;
           dispatch(setQuery(val));
           dispatch(setPage(1));
-          dispatch(setOpen(true));
+          dispatch(setOpen(true)); // 💡 Se abre porque el usuario está escribiendo activamente
         }}
         onFocus={() => {
-          dispatch(setOpen(true));
+          dispatch(setOpen(true)); // 💡 Se abre porque el usuario hace foco en el input
         }}
         fullWidth
         InputProps={{
@@ -167,7 +168,6 @@ export default function CustomSearchDropdown() {
                   }}
                   sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, padding: '12px 16px', borderBottom: '1px solid #e0e0e0', cursor: 'pointer', '&:hover': { backgroundColor: '#f3f4f6' } }}
                 >
-                  {/* Bloque principal (Avatar, título y autor): Ocupa todo en móvil, flexible en desktop */}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexGrow: 1, minWidth: 0 }}>
                     <Avatar src={option.autor_imagen} alt={option.autor_nombre} sx={{ width: 40, height: 40, flexShrink: 0 }} />
                     <Box sx={{ minWidth: 0 }}>
@@ -176,7 +176,6 @@ export default function CustomSearchDropdown() {
                     </Box>
                   </Box>
 
-                  {/* Temas clave: Oculto en móvil (hidden), visible a partir de pantallas medianas (md:flex) */}
                   <Box className="hidden md:flex ms-auto me-2 content-center">
                     {option?.temas_clave?.length ? (
                       <div className="flex flex-wrap justify-center items-center py-3 gap-2 my-auto">
@@ -205,7 +204,6 @@ export default function CustomSearchDropdown() {
                     ) : null}
                   </Box>
 
-                  {/* Color emocional: Oculto en móvil, visible en escritorio */}
                   <Box 
                     sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, textAlign: 'center', flexShrink: 0, backgroundColor: obtenerColorEmocionalOrfeo(option.eco, option.transgresion, option.katarsis) }} 
                     className="mx-auto rounded-lg shadow-lg p-4 bg-opacity-60"

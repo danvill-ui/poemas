@@ -75,7 +75,7 @@ export default function NavActions() {
 
         {/* Panel desplegable */}
         {open && (
-          <nav className={'shadow-lg bg-white fixed min-h-[80vh] md:min-h-[20vh] max-h-[80vh] overflow-y-auto left-0 w-full top-[var(--height-header,69px)] px-4 py-4 z-50'}>
+          <nav className={'shadow-lg bg-white fixed min-h-[80vh] md:min-h-[50vh] max-h-[80vh] overflow-y-auto left-0 w-full top-[var(--height-header,69px)] px-4 py-4 z-50'}>
             
             {/* Contenedor superior exclusivo para móvil que alinea el botón a la derecha */}
             <div className="md:hidden flex justify-end mb-2">
