@@ -19,7 +19,7 @@ export default function CustomSearchDropdown() {
   const debounceRef = useRef(null);
 
   // Autoenfocar el input al montar en pantalla grande
- useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       if (inputRef.current && window.innerWidth > 768) {
         inputRef.current.focus();
@@ -36,19 +36,17 @@ export default function CustomSearchDropdown() {
   }, [page, dispatch]);
 
   const handleChipClick = (e, el) => {
-    e.stopPropagation();
+    e.stopPropagation(); // 💡 Vital para evitar que el clic burbujee y cierre o altere el dropdown
     e.preventDefault();
     
     dispatch(toggleTema(el));
     dispatch(setPage(1));
     dispatch(setOpen(true)); 
 
-    // Calculamos de forma inmediata los temas que se enviarán
     const nuevosTemas = selectedTemas.includes(el)
       ? selectedTemas.filter(t => t !== el)
       : [...selectedTemas, el];
 
-    // Búsqueda explícita por cambio de tema
     dispatch(fetchPoemas({ page: 1, query, temas: nuevosTemas }));
   };
 
@@ -68,7 +66,7 @@ export default function CustomSearchDropdown() {
     return (b[sortBy] || 0) - (a[sortBy] || 0);
   });
 
-  // Cerrar al hacer clic fuera del componente
+  // Cerrar al hacer clic fuera del componente de forma segura
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -111,7 +109,6 @@ export default function CustomSearchDropdown() {
           dispatch(setPage(1));
           dispatch(setOpen(true)); 
 
-          // 💡 Debounce manual para evitar llamadas excesivas al escribir en el input
           if (debounceRef.current) clearTimeout(debounceRef.current);
           debounceRef.current = setTimeout(() => {
             if (val.trim() || selectedTemas.length > 0) {
@@ -146,7 +143,6 @@ export default function CustomSearchDropdown() {
           </Box>
           
           <Box ref={scrollContainerRef} onScroll={handleScroll} sx={{ maxHeight: '400px', overflowY: 'auto' }}>
-            {/* Skeletons SOLO si está cargando la primera página */}
             {loading && page === 1 ? (
               <Box sx={{ p: 0 }}>
                 {[1, 2, 3, 4, 5].map((item) => (
@@ -198,7 +194,11 @@ export default function CustomSearchDropdown() {
                       </Box>
                     </Box>
 
-                    <Box className="hidden md:flex ms-auto me-2 content-center">
+                    {/* 💡 Contenedor de chips protegido con stopPropagation nativo por si hace falta */}
+                    <Box 
+                      className="hidden md:flex ms-auto me-2 content-center"
+                      onClick={(e) => e.stopPropagation()} 
+                    >
                       {option?.temas_clave?.length ? (
                         <div className="flex flex-wrap justify-center items-center py-3 gap-2 my-auto">
                           {option.temas_clave.map((el, index) => {
@@ -231,7 +231,6 @@ export default function CustomSearchDropdown() {
                   </Box>
                 ))}
 
-                {/* Indicador de carga para scroll infinito */}
                 {loading && page > 1 && (
                   <Box sx={{ p: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1.5 }}>
                     <CircularProgress size={20} sx={{ color: '#D4AF37' }} />
