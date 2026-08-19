@@ -4,6 +4,8 @@ import Link from "next/link";
 import { obtenerColorEmocionalOrfeo } from "@/components/Poema/TarjetaPoemaEmocional";
 
 // 💡 Función nativa de Next.js para generar el título dinámico en el servidor
+// 💡 Función nativa de Next.js para generar metadatos dinámicos y Open Graph para WhatsApp
+// 💡 Función nativa de Next.js para generar metadatos dinámicos optimizados para WhatsApp
 export async function generateMetadata(props) {
   const params = await props.params;
   const poemaId = params.poema.split('-')[params.poema.split('-').length - 1];
@@ -21,9 +23,40 @@ export async function generateMetadata(props) {
 
     const titulo = poemaData?.poema?.titulo || "Poema";
     const autor = poetaData?.nombre || "Autor anónimo";
+    
+    // Título limpio para la pestaña del navegador y OpenGraph principal
+    const pageTitle = `${titulo} - ${autor} | orfeo.io`;
+    const descriptionText = `Lee el poema "${titulo}" escrito por ${autor}. Descubre más poesía en orfeo.io.`;
+
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tuorfeo.com';
+    const currentUrl = `${baseUrl}/poema/${params.poema}`;
+    const imageShare = poetaData?.imagen || `${baseUrl}/img/default-share.jpg`;
 
     return {
-      title: `orfeo.io | ${titulo} de ${autor}`,
+      title: pageTitle,
+      description: descriptionText,
+      openGraph: {
+        title: titulo, // 💡 Forzamos a que el título principal de la tarjeta sea estrictamente el nombre del poema
+        description: `${titulo} | Poema de ${autor} | orfeo.io`,
+        url: currentUrl,
+        siteName: 'orfeo.io',
+        type: 'article',
+        authors: [autor],
+        images: [
+          {
+            url: imageShare,
+            width: 1200,
+            height: 630,
+            alt: titulo,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: titulo,
+        description: `Poema de ${autor}. orfeo.io`,
+        images: [imageShare],
+      },
     };
   } catch (error) {
     return { title: "orfeo.io | Poesía" };

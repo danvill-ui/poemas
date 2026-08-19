@@ -16,6 +16,7 @@ export default function CustomSearchDropdown() {
   const inputRef = useRef(null);
   const containerRef = useRef(null);
   const scrollContainerRef = useRef(null);
+  const debounceRef = useRef(null);
 
   // Autoenfocar el input al montar
   useEffect(() => {
@@ -25,14 +26,12 @@ export default function CustomSearchDropdown() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Búsqueda reactiva enviando el array de temas al slice
+  // 💡 Búsqueda explícita solo cuando cambia la página (Scroll Infinito)
   useEffect(() => {
-    const delayDebounce = setTimeout(() => {
+    if (page > 1) {
       dispatch(fetchPoemas({ page, query, temas: selectedTemas }));
-    }, 300);
-
-    return () => clearTimeout(delayDebounce);
-  }, [query, page, selectedTemas, dispatch]);
+    }
+  }, [page, dispatch]);
 
   const handleChipClick = (e, el) => {
     e.stopPropagation();
@@ -41,6 +40,14 @@ export default function CustomSearchDropdown() {
     dispatch(toggleTema(el));
     dispatch(setPage(1));
     dispatch(setOpen(true)); 
+
+    // Calculamos de forma inmediata los temas que se enviarán
+    const nuevosTemas = selectedTemas.includes(el)
+      ? selectedTemas.filter(t => t !== el)
+      : [...selectedTemas, el];
+
+    // Búsqueda explícita por cambio de tema
+    dispatch(fetchPoemas({ page: 1, query, temas: nuevosTemas }));
   };
 
   const handleScroll = (e) => {
@@ -101,6 +108,14 @@ export default function CustomSearchDropdown() {
           dispatch(setQuery(val));
           dispatch(setPage(1));
           dispatch(setOpen(true)); 
+
+          // 💡 Debounce manual para evitar llamadas excesivas al escribir en el input
+          if (debounceRef.current) clearTimeout(debounceRef.current);
+          debounceRef.current = setTimeout(() => {
+            if (val.trim() || selectedTemas.length > 0) {
+              dispatch(fetchPoemas({ page: 1, query: val, temas: selectedTemas }));
+            }
+          }, 300);
         }}
         onFocus={() => {
           dispatch(setOpen(true));
@@ -129,7 +144,7 @@ export default function CustomSearchDropdown() {
           </Box>
           
           <Box ref={scrollContainerRef} onScroll={handleScroll} sx={{ maxHeight: '400px', overflowY: 'auto' }}>
-            {/* 💡 Skeletons SOLO si está cargando la primera página (nueva búsqueda/filtro) */}
+            {/* Skeletons SOLO si está cargando la primera página */}
             {loading && page === 1 ? (
               <Box sx={{ p: 0 }}>
                 {[1, 2, 3, 4, 5].map((item) => (
@@ -162,7 +177,6 @@ export default function CustomSearchDropdown() {
               </Box>
             ) : (
               <>
-                {/* Renderizamos la lista actual de opciones */}
                 {sortedOptions.map((option) => (
                   <Box 
                     key={option.poema_id}
@@ -215,7 +229,7 @@ export default function CustomSearchDropdown() {
                   </Box>
                 ))}
 
-                {/* 💡 Si está cargando pero page > 1 (scroll infinito), mostramos un indicador discreto al final */}
+                {/* Indicador de carga para scroll infinito */}
                 {loading && page > 1 && (
                   <Box sx={{ p: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1.5 }}>
                     <CircularProgress size={20} sx={{ color: '#D4AF37' }} />
