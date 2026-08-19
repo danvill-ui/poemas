@@ -5,7 +5,7 @@ export default function Estrofa(props){
     return <article className={'estrofa py-3 max-w-full'} style={{minWidth:'100%'}}>
     
         {props.estrofa.map((verso,index)=>{
-            return <Verso key={index} palabras={verso.palabras}/>
+            return <Verso key={index} contenido={verso.contenido}/>
         })}
     </article>
 }
