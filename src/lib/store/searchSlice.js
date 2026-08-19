@@ -3,10 +3,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchPoemas = createAsyncThunk(
   'search/fetchPoemas',
-  async ({ page, query, temas }, { rejectWithValue }) => {
+  async ({ page, query, temas }, { rejectWithValue, signal }) => {
     try {
       const offset = (page - 1) * 20;
-      const host = await fetch('/api/getURL');
+      const host = await fetch('/api/getURL', { signal });
       const { orfeoApiUrl } = await host.json();
       let url = `${orfeoApiUrl}/poema/search?limit=20&offset=${offset}`;
       
@@ -17,7 +17,8 @@ export const fetchPoemas = createAsyncThunk(
         url += `&temas=${encodeURIComponent(temasString)}`;
       }
 
-      const response = await fetch(url);
+      // 💡 Pasamos la señal del thunk al fetch para cancelar peticiones pendientes automáticamente
+      const response = await fetch(url, { signal });
       const data = await response.json();
       
       return {
@@ -26,6 +27,10 @@ export const fetchPoemas = createAsyncThunk(
         isNewSearch: page === 1
       };
     } catch (error) {
+      // Si la petición fue abortada por escribir rápido, la ignoramos de forma limpia
+      if (error.name === 'AbortError') {
+        return rejectWithValue({ aborted: true });
+      }
       return rejectWithValue(error.message);
     }
   }
@@ -38,7 +43,7 @@ const searchSlice = createSlice({
     selectedTemas: [],
     options: [],
     totalCount: 0,
-    loading: false, // Controlado estrictamente
+    loading: false,
     open: false,
     activeBtn: null,
     page: 1,
@@ -50,11 +55,11 @@ const searchSlice = createSlice({
     setQuery: (state, action) => {
       state.query = action.payload;
       state.page = 1;
-      state.loading = true; // 💡 Forzamos loading inmediato al escribir
+      state.loading = true;
       if (!action.payload && state.selectedTemas.length === 0) {
         state.options = [];
         state.totalCount = 0;
-        state.loading = false; // Si vacía todo, apagamos el loading
+        state.loading = false;
       }
     },
     toggleTema: (state, action) => {
@@ -65,7 +70,7 @@ const searchSlice = createSlice({
         state.selectedTemas.push(tema);
       }
       state.page = 1;
-      state.loading = true; // 💡 Forzamos loading inmediato al cambiar temas
+      state.loading = true;
 
       if (state.selectedTemas.length > 0) {
         state.open = true;
@@ -75,7 +80,7 @@ const searchSlice = createSlice({
     setSelectedTemas: (state, action) => {
       state.selectedTemas = action.payload;
       state.page = 1;
-      state.loading = true; // 💡 Forzamos loading inmediato
+      state.loading = true;
     },
     setOpen: (state, action) => {
       state.open = action.payload;
@@ -88,7 +93,7 @@ const searchSlice = createSlice({
     },
     setPage: (state, action) => {
       state.page = action.payload;
-      state.loading = true; // 💡 Forzamos loading al cambiar de página (scroll infinito)
+      state.loading = true;
     },
     setSortBy: (state, action) => {
       state.sortBy = action.payload;
@@ -112,12 +117,11 @@ const searchSlice = createSlice({
         state.currentRequestId = action.meta.requestId;
       })
       .addCase(fetchPoemas.fulfilled, (state, action) => {
-        // Ignoramos respuestas de peticiones anteriores obsoletas
         if (action.meta.requestId !== state.currentRequestId) {
           return; 
         }
 
-        state.loading = false; // Solo se apaga cuando la ÚLTIMA petición responde
+        state.loading = false;
         const { data, totalItems, isNewSearch } = action.payload;
 
         if (isNewSearch) {
@@ -137,12 +141,16 @@ const searchSlice = createSlice({
         state.activeBtn = 'search';
       })
       .addCase(fetchPoemas.rejected, (state, action) => {
-        // Ignoramos errores de peticiones obsoletas
+        // Si el error fue porque se abortó la petición al escribir otra letra, no hacemos nada con el loading
+        if (action.payload?.aborted) {
+          return;
+        }
+
         if (action.meta.requestId !== state.currentRequestId) {
           return;
         }
 
-        state.loading = false; // Se apaga si falla la última petición
+        state.loading = false;
         console.error("🔥 Error capturado en fetchPoemas:", action.payload || action.error);
       });
   },
