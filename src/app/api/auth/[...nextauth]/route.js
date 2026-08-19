@@ -15,7 +15,6 @@ export const authOptions = {
         }
 
         try {
-          // Usamos la variable de entorno del servidor o de Next Public según prefieras
           const apiUrl = process.env.ORFEOAPI;
           console.log("URL final de fetch:", `${apiUrl}/users/login`);
 
@@ -28,6 +27,7 @@ export const authOptions = {
             }),
           });
 
+          
           const user = await res.json();
           console.log('user ', user);
 
@@ -36,7 +36,6 @@ export const authOptions = {
               id: user.id.toString(),
               name: user.name,
               email: user.email,
-              // Comprobamos si user.autor viene definido y cogemos su ID (o el objeto entero)
               autor: user.autor ? user.autor.id : null 
             };
           }
@@ -51,24 +50,22 @@ export const authOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // Si el usuario acaba de loguearse, pasamos sus datos al token
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
-        token.autor = user.autor; // <-- ¡Guardamos el autor aquí!
+        token.autor = user.autor; 
       }
       return token;
     },
     async session({ session, token }) {
-      // Pasamos los datos del token a la sesión del cliente
       if (token) {
         session.user = {
           ...session.user,
           id: token.id,
           name: token.name,
           email: token.email,
-          autor: token.autor, // <-- ¡Lo inyectamos en la sesión para usarlo en el frontend!
+          autor: token.autor, 
         };
       }
       return session;
@@ -81,7 +78,10 @@ export const authOptions = {
     signIn: "/login",
   },
 };
+
 console.log("DEBUG: Variable ORFEOAPI =", process.env.ORFEOAPI);
 console.log("DEBUG: Variable NEXTAUTH_URL =", process.env.NEXTAUTH_URL);
+
+// 💡 ESTO ES LO QUE FALTABA PARA QUE EL APP ROUTER FUNCIONE:
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

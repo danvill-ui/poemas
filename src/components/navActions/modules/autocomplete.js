@@ -5,13 +5,13 @@ import useTermIcon from "@/components/setIcon";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { setQuery, setSelectedTema, setOpen, setPage, setSortBy, fetchPoemas } from "@/lib/store/searchSlice";
+import { setQuery, toggleTema, setSelectedTemas, setOpen, setPage, setSortBy, fetchPoemas } from "@/lib/store/searchSlice";
 import { obtenerColorEmocionalOrfeo } from "@/components/Poema/TarjetaPoemaEmocional";
 
 export default function CustomSearchDropdown() {
   const dispatch = useDispatch();
-  const { query, selectedTema, options, totalCount, loading, open, page, hasMore, sortBy } = useSelector((state) => state.search);
-  
+  const { query, selectedTemas, options, totalCount, loading, open, page, hasMore, sortBy } = useSelector((state) => state.search);
+
   const router = useRouter();
   const inputRef = useRef(null);
   const containerRef = useRef(null);
@@ -25,23 +25,22 @@ export default function CustomSearchDropdown() {
     return () => clearTimeout(timer);
   }, []);
 
-  // 💡 Búsqueda reactiva por cambios en los filtros, pero SIN manipular el estado 'open' aquí
+  // Búsqueda reactiva enviando el array de temas al slice
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      dispatch(fetchPoemas({ page, query, tema: selectedTema }));
+      dispatch(fetchPoemas({ page, query, temas: selectedTemas }));
     }, 300);
 
     return () => clearTimeout(delayDebounce);
-  }, [query, page, selectedTema, dispatch]);
+  }, [query, page, selectedTemas, dispatch]);
 
   const handleChipClick = (e, el) => {
     e.stopPropagation();
     e.preventDefault();
     
-    const nuevoTema = selectedTema === el ? null : el;
-    dispatch(setSelectedTema(nuevoTema));
+    dispatch(toggleTema(el));
     dispatch(setPage(1));
-    dispatch(setOpen(true)); // Acción explícita del usuario al filtrar por tema
+    dispatch(setOpen(true)); 
   };
 
   const handleScroll = (e) => {
@@ -52,7 +51,6 @@ export default function CustomSearchDropdown() {
       hasMore
     ) {
       dispatch(setPage(page + 1));
-      // Nota: Eliminado dispatch(setOpen(true)) aquí para evitar que se abra al hacer scroll abajo
     }
   };
 
@@ -75,18 +73,21 @@ export default function CustomSearchDropdown() {
   return (
     <div className="container w-full relative" ref={containerRef}>
       
-      {selectedTema && (
-        <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+      {selectedTemas.length > 0 && (
+        <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
           <Typography variant="caption" className="text-gray-500 font-medium">
-            Tema activo:
+            Temas activos:
           </Typography>
-          <Chip 
-            onClick={(e) => handleChipClick(e, selectedTema)}
-            onDelete={(e) => handleChipClick(e, selectedTema)}
-            deleteIcon={<span className="ph ph-x text-white text-sm" />}
-            className="!bg-gold !text-white font-bold cursor-pointer shadow-sm"
-            label={selectedTema} 
-          />
+          {selectedTemas.map((tema) => (
+            <Chip 
+              key={tema}
+              onClick={(e) => handleChipClick(e, tema)}
+              onDelete={(e) => handleChipClick(e, tema)}
+              deleteIcon={<span className="ph ph-x text-white text-sm" />}
+              className="!bg-gold !text-white font-bold cursor-pointer shadow-sm"
+              label={tema} 
+            />
+          ))}
         </Box>
       )}
 
@@ -99,11 +100,9 @@ export default function CustomSearchDropdown() {
           const val = e.target.value;
           dispatch(setQuery(val));
           dispatch(setPage(1));
-          dispatch(setOpen(true)); // Se abre solo porque el usuario está escribiendo
+          dispatch(setOpen(true)); 
         }}
         onFocus={() => {
-          // Opcional: si quieres que se abra al hacer foco solo si hay texto o resultados previos, puedes condicionarlo. 
-          // De momento lo dejamos abierto al enfocar si el usuario interactúa.
           dispatch(setOpen(true));
         }}
         fullWidth
@@ -121,7 +120,7 @@ export default function CustomSearchDropdown() {
         <Box sx={{ position: 'absolute', left: 0, right: 0, zIndex: 1300, borderRadius: '12px', overflow: 'hidden', boxShadow: 3, backgroundColor: '#ffffff', mt: 0.5 }}>
           <Box sx={{ px: 2, py: 1.5, backgroundColor: '#f8f9fa', borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 2 }}>
             <Typography variant="caption" className="font-semibold text-gray-600 uppercase tracking-wider flex items-center gap-2">
-              Resultados {selectedTema && `(Tema: ${selectedTema})`}
+              Resultados {selectedTemas.length > 0 && `(${selectedTemas.length} tema${selectedTemas.length > 1 ? 's' : ''})`}
               {loading && <CircularProgress size={12} sx={{ color: '#D4AF37' }} />}
             </Typography>
             <Typography variant="caption" className="font-bold text-gold bg-gold/10 px-2.5 py-1 rounded-full">
@@ -130,7 +129,8 @@ export default function CustomSearchDropdown() {
           </Box>
           
           <Box ref={scrollContainerRef} onScroll={handleScroll} sx={{ maxHeight: '400px', overflowY: 'auto' }}>
-            {loading && page === 1 && sortedOptions.length === 0 ? (
+            {/* 💡 Skeletons SOLO si está cargando la primera página (nueva búsqueda/filtro) */}
+            {loading && page === 1 ? (
               <Box sx={{ p: 0 }}>
                 {[1, 2, 3, 4, 5].map((item) => (
                   <Box 
@@ -161,60 +161,70 @@ export default function CustomSearchDropdown() {
                 <Typography variant="body2" className="text-gray-500">No se encontraron versos...</Typography>
               </Box>
             ) : (
-              sortedOptions.map((option) => (
-                <Box 
-                  key={option.poema_id}
-                  onClick={() => {
-                    if (option.enlace_poema) {
-                      dispatch(setOpen(false));
-                      router.push(option.enlace_poema);
-                    }
-                  }}
-                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, padding: '12px 16px', borderBottom: '1px solid #e0e0e0', cursor: 'pointer', '&:hover': { backgroundColor: '#f3f4f6' } }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexGrow: 1, minWidth: 0 }}>
-                    <Avatar src={option.autor_imagen} alt={option.autor_nombre} sx={{ width: 40, height: 40, flexShrink: 0 }} />
-                    <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="body1" className="font-serif truncate">{option.titulo_poema}</Typography>
-                      <Typography variant="caption" className="text-gray-500 truncate block">{option.autor_nombre}</Typography>
+              <>
+                {/* Renderizamos la lista actual de opciones */}
+                {sortedOptions.map((option) => (
+                  <Box 
+                    key={option.poema_id}
+                    onClick={() => {
+                      if (option.enlace_poema) {
+                        dispatch(setOpen(false));
+                        router.push(option.enlace_poema);
+                      }
+                    }}
+                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, padding: '12px 16px', borderBottom: '1px solid #e0e0e0', cursor: 'pointer', '&:hover': { backgroundColor: '#f3f4f6' } }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexGrow: 1, minWidth: 0 }}>
+                      <Avatar src={option.autor_imagen} alt={option.autor_nombre} sx={{ width: 40, height: 40, flexShrink: 0 }} />
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography variant="body1" className="font-serif truncate">{option.titulo_poema}</Typography>
+                        <Typography variant="caption" className="text-gray-500 truncate block">{option.autor_nombre}</Typography>
+                      </Box>
+                    </Box>
+
+                    <Box className="hidden md:flex ms-auto me-2 content-center">
+                      {option?.temas_clave?.length ? (
+                        <div className="flex flex-wrap justify-center items-center py-3 gap-2 my-auto">
+                          {option.temas_clave.map((el, index) => {
+                            const isSelected = selectedTemas.includes(el);
+                            return (
+                              <Chip 
+                                key={index}
+                                onClick={(e) => handleChipClick(e, el)}
+                                icon={index === 0 ? <span className={`${useTermIcon(el)} text-lg !text-white`} /> : undefined}
+                                onDelete={isSelected ? (e) => handleChipClick(e, el) : undefined}
+                                deleteIcon={<span className={`ph ph-x text-sm ${isSelected ? 'text-white' : ''}`} />}
+                                className={`cursor-pointer ${
+                                  isSelected 
+                                    ? '!bg-gold !text-white font-bold border border-gold' 
+                                    : index === 0 ? '!bg-aegean !text-white' : 'bg-gray-100 text-onyx'
+                                }`} 
+                                label={el} 
+                              />
+                            );
+                          })}
+                        </div>
+                      ) : null}
+                    </Box>
+
+                    <Box 
+                      sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, textAlign: 'center', flexShrink: 0, backgroundColor: obtenerColorEmocionalOrfeo(option.eco, option.transgresion, option.katarsis) }} 
+                      className="mx-auto rounded-lg shadow-lg p-4 bg-opacity-60"
+                    >
                     </Box>
                   </Box>
+                ))}
 
-                  <Box className="hidden md:flex ms-auto me-2 content-center">
-                    {option?.temas_clave?.length ? (
-                      <div className="flex flex-wrap justify-center items-center py-3 gap-2 my-auto">
-                        <Chip 
-                          onClick={(e) => handleChipClick(e, option.temas_clave[0])}
-                          icon={<span className={`${useTermIcon(option.temas_clave[0])} text-lg !text-white`} />}
-                          onDelete={selectedTema === option.temas_clave[0] ? (e) => handleChipClick(e, option.temas_clave[0]) : undefined}
-                          deleteIcon={<span className="ph ph-x text-white text-sm" />}
-                          className={`!text-white !cursor-pointer ${selectedTema === option.temas_clave[0] ? '!bg-gold font-bold' : '!bg-aegean'}`} 
-                          label={option.temas_clave[0]} 
-                        />
-                        {option.temas_clave.slice(1).map((el, index) => {
-                          const isSelected = selectedTema === el;
-                          return (
-                            <Chip 
-                              key={index}
-                              onClick={(e) => handleChipClick(e, el)}
-                              onDelete={isSelected ? (e) => handleChipClick(e, el) : undefined}
-                              deleteIcon={<span className="ph ph-x text-sm" />}
-                              className={`cursor-pointer ${isSelected ? '!bg-gold !text-white font-bold border border-gold' : 'bg-gray-100 text-onyx'}`} 
-                              label={el} 
-                            />
-                          );
-                        })}
-                      </div>
-                    ) : null}
+                {/* 💡 Si está cargando pero page > 1 (scroll infinito), mostramos un indicador discreto al final */}
+                {loading && page > 1 && (
+                  <Box sx={{ p: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1.5 }}>
+                    <CircularProgress size={20} sx={{ color: '#D4AF37' }} />
+                    <Typography variant="caption" className="text-gray-500 font-medium">
+                      Cargando más resultados...
+                    </Typography>
                   </Box>
-
-                  <Box 
-                    sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, textAlign: 'center', flexShrink: 0, backgroundColor: obtenerColorEmocionalOrfeo(option.eco, option.transgresion, option.katarsis) }} 
-                    className="mx-auto rounded-lg shadow-lg p-4 bg-opacity-60"
-                  >
-                  </Box>
-                </Box>
-              ))
+                )}
+              </>
             )}
           </Box>
         </Box>

@@ -3,14 +3,19 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchPoemas = createAsyncThunk(
   'search/fetchPoemas',
-  async ({ page, query, tema }, { rejectWithValue }) => {
+  async ({ page, query, temas }, { rejectWithValue }) => {
     try {
       const offset = (page - 1) * 20;
-      const host=  await fetch('/api/getURL')
+      const host = await fetch('/api/getURL');
       const { orfeoApiUrl } = await host.json();
       let url = `${orfeoApiUrl}/poema/search?limit=20&offset=${offset}`;
+      
       if (query) url += `&q=${encodeURIComponent(query)}`;
-      if (tema) url += `&tema=${encodeURIComponent(tema)}`;
+      
+      if (temas && temas.length > 0) {
+        const temasString = Array.isArray(temas) ? temas.join(',') : temas;
+        url += `&temas=${encodeURIComponent(temasString)}`;
+      }
 
       const response = await fetch(url);
       const data = await response.json();
@@ -30,36 +35,47 @@ const searchSlice = createSlice({
   name: 'search',
   initialState: {
     query: '',
-    selectedTema: null,
+    selectedTemas: [],
     options: [],
     totalCount: 0,
-    loading: false,
+    loading: false, // Controlado estrictamente
     open: false,
     activeBtn: null,
     page: 1,
     hasMore: true,
     sortBy: null,
+    currentRequestId: null,
   },
   reducers: {
     setQuery: (state, action) => {
       state.query = action.payload;
       state.page = 1;
-      if (!action.payload && !state.selectedTema) {
+      state.loading = true; // 💡 Forzamos loading inmediato al escribir
+      if (!action.payload && state.selectedTemas.length === 0) {
         state.options = [];
         state.totalCount = 0;
+        state.loading = false; // Si vacía todo, apagamos el loading
       }
     },
-    setSelectedTema: (state, action) => {
-      // Si pulsa el mismo tema, lo deselecciona (se vuelve null); si es distinto, lo selecciona
-      const isSameTema = state.selectedTema === action.payload;
-      state.selectedTema = isSameTema ? null : action.payload;
+    toggleTema: (state, action) => {
+      const tema = action.payload;
+      if (state.selectedTemas.includes(tema)) {
+        state.selectedTemas = state.selectedTemas.filter(t => t !== tema);
+      } else {
+        state.selectedTemas.push(tema);
+      }
       state.page = 1;
-      
-      // 💡 Solo abrimos y activamos si se HA SELECCIONADO un tema (no si se ha deseleccionado)
-      if (state.selectedTema) {
+      state.loading = true; // 💡 Forzamos loading inmediato al cambiar temas
+
+      if (state.selectedTemas.length > 0) {
         state.open = true;
         state.activeBtn = 'search';
       }
+    },
+    setSelectedTemas: (state, action) => {
+      state.selectedTemas = action.payload;
+      state.page = 1;
+      state.loading = true; // 💡 Forzamos loading inmediato
     },
     setOpen: (state, action) => {
       state.open = action.payload;
@@ -72,27 +88,36 @@ const searchSlice = createSlice({
     },
     setPage: (state, action) => {
       state.page = action.payload;
+      state.loading = true; // 💡 Forzamos loading al cambiar de página (scroll infinito)
     },
     setSortBy: (state, action) => {
       state.sortBy = action.payload;
     },
     clearSearch: (state) => {
       state.query = '';
-      state.selectedTema = null;
+      state.selectedTemas = [];
       state.options = [];
       state.totalCount = 0;
       state.page = 1;
       state.open = false;
       state.activeBtn = null;
+      state.loading = false;
+      state.currentRequestId = null;
     }
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchPoemas.pending, (state) => {
+      .addCase(fetchPoemas.pending, (state, action) => {
         state.loading = true;
+        state.currentRequestId = action.meta.requestId;
       })
       .addCase(fetchPoemas.fulfilled, (state, action) => {
-        state.loading = false;
+        // Ignoramos respuestas de peticiones anteriores obsoletas
+        if (action.meta.requestId !== state.currentRequestId) {
+          return; 
+        }
+
+        state.loading = false; // Solo se apaga cuando la ÚLTIMA petición responde
         const { data, totalItems, isNewSearch } = action.payload;
 
         if (isNewSearch) {
@@ -111,8 +136,13 @@ const searchSlice = createSlice({
         state.open = true;
         state.activeBtn = 'search';
       })
-      .addCase(fetchPoemas.rejected, (state) => {
-        state.loading = false;
+      .addCase(fetchPoemas.rejected, (state, action) => {
+        // Ignoramos errores de peticiones obsoletas
+        if (action.meta.requestId !== state.currentRequestId) {
+          return;
+        }
+
+        state.loading = false; // Se apaga si falla la última petición
         console.error("🔥 Error capturado en fetchPoemas:", action.payload || action.error);
       });
   },
@@ -120,7 +150,8 @@ const searchSlice = createSlice({
 
 export const { 
   setQuery, 
-  setSelectedTema, 
+  toggleTema,
+  setSelectedTemas, 
   setOpen, 
   setActiveButton, 
   setPage, 
