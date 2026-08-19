@@ -18,10 +18,12 @@ export default function CustomSearchDropdown() {
   const scrollContainerRef = useRef(null);
   const debounceRef = useRef(null);
 
-  // Autoenfocar el input al montar
-  useEffect(() => {
+  // Autoenfocar el input al montar en pantalla grande
+ useEffect(() => {
     const timer = setTimeout(() => {
-      if (inputRef.current) inputRef.current.focus();
+      if (inputRef.current && window.innerWidth > 768) {
+        inputRef.current.focus();
+      }
     }, 50);
     return () => clearTimeout(timer);
   }, []);
