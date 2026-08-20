@@ -15,7 +15,7 @@ export default function Verso(props) {
 
   return (
     <div className=" max-w-full flex flex-wrap justify-start md:justify-center">
-      {props.contenido}
+      <span>{props.contenido}</span>
     </div>
   );
 }

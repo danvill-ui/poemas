@@ -21,6 +21,9 @@
 .poeta{
     font-weight:bold
 }
+.estrofa{
+    line-height:200%
+}
 
 .estrofa  >div:first-child >span:first-child::first-letter {
     display: inline-block;
@@ -28,7 +31,7 @@
     position:relative;
     text-transform:uppercase;
     font-size: 150%;
-    line-height: 100%;
+
     font-family:"serif";
     float: left;
     margin-right: 0.1rem;
