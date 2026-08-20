@@ -39,7 +39,7 @@ export default function Poema({ poema, relacionados }) {
   console.log('relacionados',relacionados)
   return (
     <>
-      <section className="text-center my-9 md:text-center font-sans text-onyx text-2xl p-3" >
+      <section className="text-center mb-9 md:text-center font-sans text-onyx text-2xl p-3" >
         {poemaData.estrofas?.map((est, index) => (
           <Estrofa key={index} estrofa={est.versos} className={'estrofa'} />
         ))}
