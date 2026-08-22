@@ -1,19 +1,27 @@
 import { withAuth } from "next-auth/middleware";
 
 export default withAuth({
+  callbacks: {
+    authorized: ({ req, token }) => {
+      const userAgent = req.headers.get("user-agent") || "";
+      
+      // Permitir explícitamente el acceso a los bots de redes sociales
+      const isSocialBot = /facebookexternalhit|WhatsApp|Twitterbot|LinkedInBot|TelegramBot/i.test(userAgent);
+      if (isSocialBot) {
+        return true; 
+      }
+
+      // Para cualquier usuario normal, exigir que esté logueado (token activo)
+      return !!token;
+    },
+  },
   pages: {
-    signIn: "/login", // Ruta a donde se redirigirá al usuario si no está logueado
+    signIn: "/login",
   },
 });
 
-// Define qué rutas quieres proteger (o excluye las públicas)
 export const config = {
   matcher: [
-    /*
-     * Protege todas las rutas de la aplicación excepto:
-     * - La página de login o raíz si es pública
-     * - Archivos estáticos, imágenes, favicon, etc.
-     */
     "/((?!api/auth|_next/static|_next/image|favicon.ico|img/).*)",
   ],
 };
