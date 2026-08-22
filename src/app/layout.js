@@ -20,10 +20,7 @@ const title = localFont({
   ],
   variable: '--font-title'
 })
-export const metadata = {
-  title: "Poesía",
-  description: "Creado por Daniel Villagrán"
-};
+
 export const viewport = {
   width: "device-width",
   initialScale: 1,

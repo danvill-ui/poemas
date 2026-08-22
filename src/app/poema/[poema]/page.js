@@ -36,7 +36,7 @@ export async function generateMetadata(props) {
       title: pageTitle,
       description: descriptionText,
       openGraph: {
-        title: titulo, // 💡 Forzamos a que el título principal de la tarjeta sea estrictamente el nombre del poema
+        title:`${titulo} | Poema de ${autor} | orfeo.io`, // 💡 Forzamos a que el título principal de la tarjeta sea estrictamente el nombre del poema
         description: `${titulo} | Poema de ${autor} | orfeo.io`,
         url: currentUrl,
         siteName: 'orfeo.io',
