@@ -28,9 +28,9 @@ export async function generateMetadata(props) {
     const pageTitle = `${titulo} - ${autor} | orfeo.io`;
     const descriptionText = `Lee el poema "${titulo}" escrito por ${autor}. Descubre más poesía en orfeo.io.`;
 
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://tuorfeo.com';
+    const baseUrl =  'https://orfeo.io';
     const currentUrl = `${baseUrl}/poema/${params.poema}`;
-    const imageShare = poetaData?.imagen || `${baseUrl}/img/default-share.jpg`;
+    const imageShare = `${baseUrl}/img/default-share.png`;
 
     return {
       title: pageTitle,
