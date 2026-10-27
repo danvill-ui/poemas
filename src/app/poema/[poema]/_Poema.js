@@ -21,8 +21,6 @@ export default function Poema({ poema, relacionados }) {
     }
   }, [poema, dispatch]);
 
-  console.log('relacionados',relacionados)
-  console.log('poema',poema)
   // Si está cargando o todavía no tenemos el objeto del poema en Redux, mostramos el loading
   if (loading || !poemaData?.estrofas || !poemaData.poema) {
     return (
@@ -36,7 +34,6 @@ export default function Poema({ poema, relacionados }) {
   const color = obtenerColorEmocionalOrfeo(poemaData.poema.eco, poemaData.poema.transgresion, poemaData.poema.katarsis);
   const ideas = ['transgresion', 'katarsis', 'eco'];
 
-  console.log('relacionados',relacionados)
   return (
     <>
       <section className="text-center mb-9 md:text-center font-sans text-onyx text-2xl p-3" >

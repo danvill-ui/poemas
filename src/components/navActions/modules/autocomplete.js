@@ -121,12 +121,7 @@ export default function CustomSearchDropdown() {
         }}
         fullWidth
         InputProps={{
-          className: "!font-sans text-onyx border-2 !border-gold rounded-full py-1 px-4 my-3 bg-white",
-          endAdornment: (
-            <InputAdornment position="end">
-              {loading && page === 1 ? <CircularProgress size={20} color="inherit" /> : <span className="ph ph-magnifying-glass text-gold text-2xl" />}
-            </InputAdornment>
-          ),
+          className: "!font-sans text-onyx border-2 !border-gold rounded-full py-1 px-4 my-3 bg-white"
         }}
       />
 
@@ -135,10 +130,10 @@ export default function CustomSearchDropdown() {
           <Box sx={{ px: 2, py: 1.5, backgroundColor: '#f8f9fa', borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 2 }}>
             <Typography variant="caption" className="font-semibold text-gray-600 uppercase tracking-wider flex items-center gap-2">
               Resultados {selectedTemas.length > 0 && `(${selectedTemas.length} tema${selectedTemas.length > 1 ? 's' : ''})`}
-              {loading && <CircularProgress size={12} sx={{ color: '#D4AF37' }} />}
+          
             </Typography>
             <Typography variant="caption" className="font-bold text-gold bg-gold/10 px-2.5 py-1 rounded-full">
-              {loading && page === 1 ? <CircularProgress size={14} sx={{ color: '#D4AF37' }} /> : `${options.length} / ${totalCount}`}
+           {`${options.length} / ${totalCount}`}
             </Typography>
           </Box>
           

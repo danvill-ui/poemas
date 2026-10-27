@@ -85,9 +85,14 @@ function TarjetaPoemaEmocional({ eco = 0, transgresion = 0, katarsis = 0, titulo
         {/* Contenido de la tarjeta */}
         <div className="relative z-10 flex flex-col gap-4" style={{ color: colorTexto }}>
           <h3 className="text-xl font-bold">{titulo}</h3>
+         
           
-          <div className="flex flex-col gap-2.5 text-sm container">
-            {/* Barra Eco */}
+          <div className="grid grid-cols-4 md:grid-cols-2 container">
+             <div>
+           <img src='/img/orpheo.svg' style={{maxWidth:'50px' }}/>
+          </div>
+          <div>
+ {/* Barra Eco */}
             <div className="flex items-center gap-3 w-50">
               <span className="w-28 flex items-center gap-1.5 font-medium">
                 <span className="icon icon-eco text-orfeo-eco" /> Eco:
@@ -128,6 +133,8 @@ function TarjetaPoemaEmocional({ eco = 0, transgresion = 0, katarsis = 0, titulo
               </div>
               <span className="w-8 text-right font-bold text-xs">{valKat}</span>
             </div>
+          </div>
+           
           </div>
         </div>
       </div>
