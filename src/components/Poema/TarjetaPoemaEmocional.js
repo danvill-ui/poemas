@@ -74,12 +74,12 @@ function TarjetaPoemaEmocional({ eco = 0, transgresion = 0, katarsis = 0, titulo
 
       <div 
         className="p-6 transition-all duration-300 border border-white/30 relative overflow-hidden "
-        style={estiloOndasLaterales}
+        //style={estiloOndasLaterales}
       >
         {/* Capa estática del núcleo de mezcla (más ancho) */}
         <div 
           className="absolute inset-0 pointer-events-none" 
-          style={estiloFondoEstatico} 
+         //style={estiloFondoEstatico} 
         />
 
         {/* Contenido de la tarjeta */}
