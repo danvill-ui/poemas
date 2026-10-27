@@ -64,18 +64,12 @@ export default function NavActions() {
              <img src={'/img/icons/lira.svg'} className="w-8 sm:w-[50px] h-auto" alt="Lira" />
           </Button>
           
-          <Button onClick={() => handleClick("list")} className={`min-w-0 p-1.5 sm:p-2 min-h-[auto] sm:min-h-[70px] border-2 transition-all duration-300 ${
-            activeBtn === "list" 
-              ? "!border-onyx !text-onyx !bg-white" 
-              : "!border-transparent !text-gold !bg-marble"
-            }`}>
-            <img src={`/img/icons/puerta_${activeBtn==='list'?'abierta':'cerrada'}.svg`} className="w-8 sm:w-[50px] h-auto" alt="Puerta" />
-          </Button>
+      
         </nav>
 
         {/* Panel desplegable */}
         {open && (
-          <nav className={'shadow-lg bg-white fixed min-h-[80vh] md:min-h-[50vh] max-h-[80vh] overflow-y-auto left-0 w-full top-[var(--height-header,69px)] px-4 py-4 z-50'}>
+          <nav className={'shadow-lg bg-white fixed min-h-[80vh] md:min-h-[80vh] max-h-[80vh] overflow-y-auto left-0 w-full top-[var(--height-header,69px)] px-4 py-4 z-50'}>
             
             {/* Contenedor superior exclusivo para móvil que alinea el botón a la derecha */}
             <div className="md:hidden flex justify-end mb-2">

@@ -82,7 +82,6 @@ export default async function PagePoem(props) {
   const poeta = await responsePoeta.json();
   const relacionados = await responseRelacionado.json();
 
-  console.log('rlaciona',relacionados)
 
   const color = obtenerColorEmocionalOrfeo(poema?.poema.eco, poema.poema.transgresion, poema.poema.katarsis);
   

@@ -32,7 +32,7 @@ export default function PoemChips({ temas }) {
   };
 
   return (
-    <div className="flex flex-wrap justify-center items-center w-full gap-2">
+    <div className="flex flex-wrap justify-center items-center w-full gap-2 my-5">
       {/* Primer tema clave (con su icono correspondiente) */}
       {(() => {
         const isSelected = selectedTemas.includes(temas[0]);

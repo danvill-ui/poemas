@@ -5,8 +5,6 @@ import { getServerSession } from "next-auth";
 import { authConfig } from "@/lib/auth";
 
 
-
-
 const title = localFont({
   src: [
     {
